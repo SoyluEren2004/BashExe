@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Şu anki klasörün adını al
-CURRENT_DIR_NAME=$(basename "$PWD")
-SCRIPT_NAME=$(basename "$0")
+# Şu anki klasörün tam yolunu (Windows formatında değil, POSIX) ve adını al
+TARGET_DIR=$(pwd)
+PARENT_DIR=$(dirname "$TARGET_DIR")
+DIR_NAME=$(basename "$TARGET_DIR")
 
-# 1. Klasörün içindeki diğer her şeyi hemen sil
+# 1. Klasör içindeki tüm dosyaları temizle (delete.sh hariç)
+SCRIPT_NAME=$(basename "$0")
 for item in ./* ./.*; do
     base_item=$(basename "$item")
     if [ "$base_item" = "." ] || [ "$base_item" = ".." ] || [ "$base_item" = "$SCRIPT_NAME" ]; then
@@ -15,9 +17,18 @@ for item in ./* ./.*; do
     fi
 done
 
-# 2. Üst dizine geç, process'lerin kapanması için 3 sn bekle ve ana klasörü sil
-(
-    cd ..
-    sleep 3
-    rm -rf "$CURRENT_DIR_NAME"
-) >/dev/null 2>&1 &
+# 2. Geçici bir Windows Batch dosyası oluştur (CMD arka planda silsin)
+CLEANUP_BAT="$PARENT_DIR/cleanup_temp.bat"
+
+cat << EOF > "$CLEANUP_BAT"
+@echo off
+timeout /t 3 /nobreak > nul
+rmdir /s /q "$TARGET_DIR" 2>nul
+del "%~f0"
+EOF
+
+# 3. Batch dosyasını tamamen bağımsız (detached) bir Windows süreci olarak başlat
+cmd.exe /c "start /b "" "$CLEANUP_BAT""
+
+# 4. Kendi Bash sürecini sonlandır
+exit 0
