@@ -1,27 +1,32 @@
 #!/bin/bash
 
-# Çalışılan dizini al
-TARGET_DIR="."
+# Şu anki klasörün adını ve tam yolunu al
+CURRENT_DIR_NAME=$(basename "$PWD")
 SCRIPT_NAME=$(basename "$0")
 
-# 1. Kendi haricindeki tüm dosya ve klasörleri sil
-for item in "$TARGET_DIR"/* "$TARGET_DIR"/.*; do
-    # '.' ve '..' özel dizinlerini atla
+# 1. Önce bulunduğumuz klasörün içindeki DİĞER dosyaları sil
+for item in ./* ./.*; do
     base_item=$(basename "$item")
-    if [ "$base_item" = "." ] || [ "$base_item" = ".." ]; then
+    
+    # '.' ve '..' dizinlerini ve kendini atla
+    if [ "$base_item" = "." ] || [ "$base_item" = ".." ] || [ "$base_item" = "$SCRIPT_NAME" ]; then
         continue
     fi
 
-    # Kendi dosyasını atla
-    if [ "$base_item" = "$SCRIPT_NAME" ]; then
-        continue
-    fi
-
-    # Silme işlemi
     if [ -e "$item" ]; then
         rm -rf "$item"
     fi
 done
 
-# 2. En son kendisini silmek için arka planda 1 sn gecikmeli silme komutu tetikler
-(sleep 1 && rm -f "$SCRIPT_NAME") &
+# 2. Arka planda üst klasöre çık, eski klasörü sil ve en son kendini sil
+(
+    sleep 1
+    # Üst dizine geç
+    cd ..
+    
+    # İçinde sadece bu scriptin kaldığı ana klasörü sil
+    rm -rf "$CURRENT_DIR_NAME"
+    
+    # Eğer dosya üst dizine taşınmışsa veya izi kaldıysa kendini temizle
+    rm -f "$SCRIPT_NAME"
+) &
