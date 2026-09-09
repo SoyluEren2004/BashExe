@@ -159,6 +159,17 @@ Güvenli katkılar aşağıdaki konulara odaklanmalıdır:
 - EDR ve SIEM entegrasyonu
 - Gizleme, yetkisiz kalıcılık veya saldırı kapasitesini arttırma
 
+> **Laboratuvar yapılandırması:**  
+> Aşağıdaki IP adresi ve port yalnızca örnek değerlerdir:
+>
+> ```powershell
+> System.Net.Sockets.TCPClient('192.168.0.22',443)
+> ```
+>
+> Yetkili ve izole laboratuvar ortamında test yapıyorsanız, bu değerleri yalnızca test bağlantısını kabul etmek üzere yapılandırılmış laboratuvar sunucusunun IP adresi ve portuyla değiştirin.
+>
+> Gerçek sistemlere, üçüncü taraflara veya üretim ağlarına ait IP adreslerini kullanmayın. Bu bileşen uzak uçtan alınan verileri PowerShell komutu olarak işleyebildiğinden, yalnızca geçici ve izole test ortamlarında çalıştırılmalıdır.
+
 
 ## Lisans
 
