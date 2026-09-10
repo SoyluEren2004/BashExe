@@ -1,4 +1,4 @@
-# ReverseShellExe
+# BAD USB POWERSHELL Reverse TCP Shell
 
 > Eğitim, araştırma ve yalnızca yazılı izin alınmış güvenlik testleri için hazırlanmıştır.
 
